@@ -1,7 +1,7 @@
 /**
  * Quick balanced binary search tree
  *
- * @version 2016-02-21_001
+ * @version 2016-03-21_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
  * Copyright (C) 2012 - 2016 Robert ALTNOEDER
@@ -1110,8 +1110,8 @@ class QTree : public dsaext::Map<K, V>
     }
 
   private:
-    Node* root {nullptr};
-    size_t     size {0};
+    Node*  root {nullptr};
+    size_t size {0};
 
     compare_func compare;
 };
