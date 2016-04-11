@@ -1,7 +1,7 @@
 /**
  * Binary search in a sorted array
  *
- * @version 2016-03-21_001
+ * @version 2016-04-11_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
  * Copyright (C) 2012 - 2016 Robert ALTNOEDER
@@ -32,11 +32,13 @@
 #ifndef BSEARCH_H
 #define	BSEARCH_H
 
+#include <cstddef>
+
 template<typename T>
 class BSearch
 {
   public:
-    typedef int (*compare_func)(T* key, T* other);
+    typedef int (*compare_func)(const T* key, const T* other);
 
     static const size_t NPOS = ~(static_cast<size_t> (0));
 
@@ -68,7 +70,7 @@ class BSearch
         while (width > 0)
         {
             size_t mid_index = start_index + (width / 2);
-            int direction = compare(array[mid_index], value);
+            int direction = compare(&(array[mid_index]), value);
             if (direction < 0)
             {
                 start_index = mid_index + 1;
