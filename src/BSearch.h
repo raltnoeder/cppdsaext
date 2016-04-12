@@ -42,7 +42,8 @@ class BSearch
 
     static const size_t NPOS = ~(static_cast<size_t> (0));
 
-    BSearch()
+    BSearch(compare_func compare):
+        compare_ptr(compare)
     {
     }
 
@@ -53,6 +54,15 @@ class BSearch
 
     virtual ~BSearch() noexcept
     {
+    }
+
+    size_t find(
+        T*           array,
+        size_t       array_length,
+        T*           value
+    )
+    {
+        return BSearch::find(array, array_length, value, compare_ptr);
     }
 
     static size_t find(
@@ -90,6 +100,9 @@ class BSearch
 
         return result;
     }
+    
+  private:
+    compare_func compare_ptr;
 };
 
 #endif	/* BSEARCH_H */
