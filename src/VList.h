@@ -1,10 +1,10 @@
 /**
- * Vector/List
+ * Vector/List, implemented as a double ended queue (deque)
  *
- * @version 2016-03-21_001
+ * @version 2018-05-16_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
- * Copyright (C) 2012 - 2016 Robert ALTNOEDER
+ * Copyright (C) 2012 - 2018 Robert ALTNOEDER
  *
  * Redistribution and use in source and binary forms,
  * with or without modification, are permitted provided that
@@ -32,6 +32,11 @@
 #ifndef VLIST_H
 #define	VLIST_H
 
+#include <cstddef>
+#include <new>
+
+#include <dsaext.h>
+
 template<typename V>
 class VList
 {
@@ -43,7 +48,7 @@ class VList
         friend class VList;
 
       public:
-        Node(V* value_ref):
+        Node(const V* value_ref):
             value(value_ref)
         {
         }
@@ -69,7 +74,7 @@ class VList
 
         virtual V* get_value() const
         {
-            return value;
+            return const_cast<V*> (value);
         }
 
         virtual void reuse()
@@ -80,9 +85,9 @@ class VList
         }
 
       private:
-        Node* next  {nullptr};
-        Node* prev  {nullptr};
-        V*    value {nullptr};
+        Node*       next    {nullptr};
+        Node*       prev    {nullptr};
+        const V*    value   {nullptr};
     };
 
     template<typename T>
@@ -170,13 +175,13 @@ class VList
 
         virtual V* next()
         {
-            V* iter_value {nullptr};
+            const V* iter_value {nullptr};
             Node* node = BaseIterator<V>::next_node();
             if (node != nullptr)
             {
                 iter_value = node->value;
             }
-            return iter_value;
+            return const_cast<V*> (iter_value);
         }
     };
 
@@ -204,29 +209,29 @@ class VList
 
     virtual V* get(V* value_ptr)
     {
-        V* value = nullptr;
+        const V* value = nullptr;
         Node* node = find_node(value_ptr);
         if (node != nullptr)
         {
             value = node->value;
         }
-        return value;
+        return const_cast<V*> (value);
     }
 
-    virtual Node* get_node(V* value_ptr)
+    virtual Node* get_node(const V* value_ptr)
     {
         return find_node(value_ptr);
     }
 
     // @throw std::bad_alloc
-    virtual void prepend(V* value_ptr)
+    virtual void prepend(const V* value_ptr)
     {
         Node* ins_node = new Node(value_ptr);
         prepend_node_impl(ins_node);
     }
 
     // @throw std::bad_alloc
-    virtual void append(V* value_ptr)
+    virtual void append(const V* value_ptr)
     {
         Node* ins_node = new Node(value_ptr);
         append_node_impl(ins_node);
@@ -243,7 +248,7 @@ class VList
     }
 
     // @throw std::bad_alloc
-    virtual void insert_before(Node* node, V* value_ptr)
+    virtual void insert_before(Node* node, const V* value_ptr)
     {
         Node* ins_node = new Node(value_ptr);
         insert_node_before_impl(node, ins_node);
@@ -254,7 +259,7 @@ class VList
         insert_node_before_impl(node, ins_node);
     }
 
-    virtual void remove(V* value_ptr)
+    virtual void remove(const V* value_ptr)
     {
         Node* rm_node = find_node(value_ptr);
         if (rm_node != nullptr)
@@ -274,7 +279,7 @@ class VList
     }
 
   private:
-    Node* find_node(V* value_ptr)
+    Node* find_node(const V* value_ptr) const
     {
         Node* result_node = head;
         while (result_node != nullptr)
@@ -383,7 +388,7 @@ class VList
     Node*  tail {nullptr};
     size_t size {0};
 
-    compare_func compare;
+    const compare_func compare;
 };
 
 #endif	/* VLIST_H */

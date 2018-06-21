@@ -1,10 +1,10 @@
 /**
  * Binary search in a sorted array
  *
- * @version 2016-04-11_001
+ * @version 2018-05-16_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
- * Copyright (C) 2012 - 2016 Robert ALTNOEDER
+ * Copyright (C) 2012 - 2018 Robert ALTNOEDER
  *
  * Redistribution and use in source and binary forms,
  * with or without modification, are permitted provided that
@@ -42,7 +42,7 @@ class BSearch
 
     static const size_t NPOS = ~(static_cast<size_t> (0));
 
-    BSearch(compare_func compare):
+    BSearch(const compare_func compare):
         compare_ptr(compare)
     {
     }
@@ -57,19 +57,19 @@ class BSearch
     }
 
     size_t find(
-        T*           array,
-        size_t       array_length,
-        T*           value
-    )
+        const T* const  array,
+        const size_t    array_length,
+        const T* const  value
+    ) const
     {
         return BSearch::find(array, array_length, value, compare_ptr);
     }
 
     static size_t find(
-        T*           array,
-        size_t       array_length,
-        T*           value,
-        compare_func compare
+        const T* const      array,
+        const size_t        array_length,
+        const T* const      value,
+        const compare_func  compare
     )
     {
         size_t result      {NPOS};
@@ -79,7 +79,7 @@ class BSearch
         size_t width {array_length};
         while (width > 0)
         {
-            size_t mid_index = start_index + (width / 2);
+            const size_t mid_index = start_index + (width / 2);
             int direction = compare(&(array[mid_index]), value);
             if (direction < 0)
             {
@@ -100,9 +100,9 @@ class BSearch
 
         return result;
     }
-    
+
   private:
-    compare_func compare_ptr;
+    const compare_func compare_ptr;
 };
 
 #endif	/* BSEARCH_H */
