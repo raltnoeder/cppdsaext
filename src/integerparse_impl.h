@@ -68,8 +68,6 @@ namespace dsaext
         const std::string&  digit_set
     )
     {
-        const T min_negative_base = min_value / base;
-        const T max_positive_base = max_value / base;
 
         if (data_length < 1)
         {
@@ -84,6 +82,7 @@ namespace dsaext
         size_t index = numbers_offset;
         if (positive_signed)
         {
+            const T max_positive_base = max_value / base;
             while (index < data_length)
             {
                 if (result > max_positive_base)
@@ -109,6 +108,7 @@ namespace dsaext
         }
         else
         {
+            const T min_negative_base = min_value / base;
             while (index < data_length)
             {
                 if (result < min_negative_base)
