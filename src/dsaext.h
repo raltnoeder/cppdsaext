@@ -92,6 +92,22 @@ namespace dsaext
         DuplicateInsertException& operator=(DuplicateInsertException&& orig) = default;
         virtual ~DuplicateInsertException() noexcept;
     };
+
+    template<typename T>
+    class Sort
+    {
+      public:
+        typedef int (*compare_func)(const T* key, const T* other);
+        typedef void (*sort_func)(T* items[], size_t item_count);
+
+        static void bubble_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void selection_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void bingo_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void insertion_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void shell_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void heap_sort(T* items[], size_t item_count, compare_func compare_fn);
+        static void merge_sort(T* items[], size_t item_count, compare_func compare_fn);
+    };
 }
 
 #endif	/* DSAEXT_H */
