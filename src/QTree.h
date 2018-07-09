@@ -100,6 +100,70 @@ class QTree : public dsaext::Map<K, V>
             return const_cast<V*> (value);
         }
 
+        virtual Node* successor() const
+        {
+            const Node* ret_node = this;
+
+            if (ret_node->greater != nullptr)
+            {
+                ret_node = ret_node->greater;
+                while (ret_node->less != nullptr)
+                {
+                    ret_node = ret_node->less;
+                }
+            }
+            else
+            {
+                do
+                {
+                    if (ret_node->parent != nullptr)
+                    {
+                        if (ret_node->parent->less == ret_node)
+                        {
+                            ret_node = ret_node->parent;
+                            break;
+                        }
+                    }
+                    ret_node = ret_node->parent;
+                }
+                while (ret_node != nullptr);
+            }
+
+            return const_cast<Node*> (ret_node);
+        }
+
+        virtual Node* predecessor() const
+        {
+            const Node* ret_node = this;
+
+            if (ret_node->less != nullptr)
+            {
+                ret_node = ret_node->less;
+                while (ret_node->greater != nullptr)
+                {
+                    ret_node = ret_node->greater;
+                }
+            }
+            else
+            {
+                do
+                {
+                    if (ret_node->parent != nullptr)
+                    {
+                        if (ret_node->parent->greater == ret_node)
+                        {
+                            ret_node = ret_node->parent;
+                            break;
+                        }
+                    }
+                    ret_node = ret_node->parent;
+                }
+                while (ret_node != nullptr);
+            }
+
+            return const_cast<Node*> (ret_node);
+        }
+
         virtual void reuse()
         {
             key     = nullptr;
@@ -131,6 +195,12 @@ class QTree : public dsaext::Map<K, V>
             {
                 iter_node = nullptr;
             }
+        }
+
+        BaseIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            qtree_obj(qtree_ref),
+            iter_node(&start_node)
+        {
         }
 
         BaseIterator(const BaseIterator& orig) = default;
@@ -194,12 +264,105 @@ class QTree : public dsaext::Map<K, V>
         Node*  iter_node {nullptr};
     };
 
+    template<typename T>
+    class BaseReverseIterator : public dsaext::QIterator<T>
+    {
+      public:
+        BaseReverseIterator(QTree<K, V>& qtree_ref):
+            qtree_obj(qtree_ref)
+        {
+            if (qtree_obj.root != nullptr)
+            {
+                iter_node = qtree_obj.root;
+                while (iter_node->greater != nullptr)
+                {
+                    iter_node = iter_node->greater;
+                }
+            }
+            else
+            {
+                iter_node = nullptr;
+            }
+        }
+
+        BaseReverseIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            qtree_obj(qtree_ref),
+            iter_node(&start_node)
+        {
+        }
+
+        BaseReverseIterator(const BaseReverseIterator& orig) = default;
+        BaseReverseIterator& operator=(const BaseReverseIterator& orig) = default;
+        BaseReverseIterator(BaseReverseIterator&& orig) = default;
+        BaseReverseIterator& operator=(BaseReverseIterator&& orig) = default;
+
+        virtual ~BaseReverseIterator()
+        {
+        }
+
+        virtual T* next() = 0;
+
+        virtual bool has_next() const
+        {
+            return iter_node != nullptr;
+        }
+
+        virtual size_t get_size() const
+        {
+            return qtree_obj.size;
+        }
+
+      protected:
+        virtual Node* next_node()
+        {
+            Node* ret_node = iter_node;
+
+            if (ret_node != nullptr)
+            {
+                if (iter_node->less != nullptr)
+                {
+                    iter_node = iter_node->less;
+                    while (iter_node->greater != nullptr)
+                    {
+                        iter_node = iter_node->greater;
+                    }
+                }
+                else
+                {
+                    do
+                    {
+                        if (iter_node->parent != nullptr)
+                        {
+                            if (iter_node->parent->greater == iter_node)
+                            {
+                                iter_node = iter_node->parent;
+                                break;
+                            }
+                        }
+                        iter_node = iter_node->parent;
+                    }
+                    while (iter_node != nullptr);
+                }
+            }
+
+            return ret_node;
+        }
+      private:
+        QTree& qtree_obj;
+        Node*  iter_node {nullptr};
+    };
+
   public:
     class KeysIterator : public BaseIterator<K>
     {
       public:
         KeysIterator(QTree<K, V>& qtree_ref):
             BaseIterator<K>::BaseIterator(qtree_ref)
+        {
+        }
+
+        KeysIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseIterator<K>::BaseIterator(qtree_ref, start_node)
         {
         }
 
@@ -224,11 +387,50 @@ class QTree : public dsaext::Map<K, V>
         }
     };
 
+    class KeysReverseIterator : public BaseReverseIterator<K>
+    {
+      public:
+        KeysReverseIterator(QTree<K, V>& qtree_ref):
+            BaseReverseIterator<K>::BaseReverseIterator(qtree_ref)
+        {
+        }
+
+        KeysReverseIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseReverseIterator<K>::BaseReverseIterator(qtree_ref, start_node)
+        {
+        }
+
+        KeysReverseIterator(const KeysReverseIterator& orig) = default;
+        KeysReverseIterator& operator=(const KeysReverseIterator& orig) = default;
+        KeysReverseIterator(KeysReverseIterator&& orig) = default;
+        KeysReverseIterator& operator=(KeysReverseIterator&& orig) = default;
+
+        virtual ~KeysReverseIterator()
+        {
+        }
+
+        virtual K* next()
+        {
+            const K* iter_key {nullptr};
+            Node* node = BaseReverseIterator<K>::next_node();
+            if (node != nullptr)
+            {
+                iter_key = node->key;
+            }
+            return const_cast<K*> (iter_key);
+        }
+    };
+
     class ValuesIterator : public BaseIterator<V>
     {
       public:
         ValuesIterator(QTree<K, V>& qtree_ref):
             BaseIterator<V>::BaseIterator(qtree_ref)
+        {
+        }
+
+        ValuesIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseIterator<V>::BaseIterator(qtree_ref, start_node)
         {
         }
 
@@ -253,11 +455,50 @@ class QTree : public dsaext::Map<K, V>
         }
     };
 
+    class ValuesReverseIterator : public BaseReverseIterator<V>
+    {
+      public:
+        ValuesReverseIterator(QTree<K, V>& qtree_ref):
+            BaseReverseIterator<V>::BaseReverseIterator(qtree_ref)
+        {
+        }
+
+        ValuesReverseIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseReverseIterator<V>::BaseReverseIterator(qtree_ref, start_node)
+        {
+        }
+
+        ValuesReverseIterator(const ValuesReverseIterator& orig) = default;
+        ValuesReverseIterator& operator=(const ValuesReverseIterator& orig) = default;
+        ValuesReverseIterator(ValuesReverseIterator&& orig) = default;
+        ValuesReverseIterator& operator=(ValuesReverseIterator&& orig) = default;
+
+        virtual ~ValuesReverseIterator()
+        {
+        }
+
+        virtual V* next()
+        {
+            const V* iter_value {nullptr};
+            Node* node = BaseReverseIterator<V>::next_node();
+            if (node != nullptr)
+            {
+                iter_value = node->value;
+            }
+            return const_cast<V*> (iter_value);
+        }
+    };
+
     class NodesIterator : public BaseIterator<Node>
     {
       public:
         NodesIterator(QTree<K, V>& qtree_ref):
             BaseIterator<Node>::BaseIterator(qtree_ref)
+        {
+        }
+
+        NodesIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseIterator<Node>::BaseIterator(qtree_ref, start_node)
         {
         }
 
@@ -273,6 +514,34 @@ class QTree : public dsaext::Map<K, V>
         virtual Node* next()
         {
             return BaseIterator<Node>::next_node();
+        }
+    };
+
+    class NodesReverseIterator : public BaseReverseIterator<Node>
+    {
+      public:
+        NodesReverseIterator(QTree<K, V>& qtree_ref):
+            BaseReverseIterator<Node>::BaseReverseIterator(qtree_ref)
+        {
+        }
+
+        NodesReverseIterator(QTree<K, V>& qtree_ref, Node& start_node):
+            BaseReverseIterator<Node>::BaseReverseIterator(qtree_ref, start_node)
+        {
+        }
+
+        NodesReverseIterator(const NodesReverseIterator& orig) = default;
+        NodesReverseIterator& operator=(const NodesReverseIterator& orig) = default;
+        NodesReverseIterator(NodesReverseIterator&& orig) = default;
+        NodesReverseIterator& operator=(NodesReverseIterator&& orig) = default;
+
+        virtual ~NodesReverseIterator()
+        {
+        }
+
+        virtual Node* next()
+        {
+            return BaseReverseIterator<Node>::next_node();
         }
     };
 
