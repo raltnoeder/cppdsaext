@@ -103,6 +103,22 @@ namespace dsaext
         NumberFormatException& operator=(NumberFormatException&& orig) = default;
         virtual ~NumberFormatException() noexcept;
     };
+
+    template<typename T>
+    int generic_compare(const T* const key_ptr, const T* const other_ptr)
+    {
+        int result = 0;
+        if (*key_ptr < *other_ptr)
+        {
+            result = -1;
+        }
+        else
+        if (*key_ptr > *other_ptr)
+        {
+            result = 1;
+        }
+        return result;
+    }
 }
 
 #endif	/* DSAEXT_H */
