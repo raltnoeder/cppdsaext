@@ -95,9 +95,9 @@ class VList
     {
       public:
         BaseIterator(const VList<T>& vlist_ref):
-            vlist_obj(vlist_ref)
+            vlist_obj(&vlist_ref)
         {
-            iter_node = vlist_obj.head;
+            iter_node = vlist_obj->head;
         }
 
         virtual ~BaseIterator() = default;
@@ -110,7 +110,7 @@ class VList
 
         virtual size_t get_size() const
         {
-            return vlist_obj.size;
+            return vlist_obj->size;
         }
 
         virtual bool has_next() const
@@ -129,7 +129,7 @@ class VList
             return ret_node;
         }
       private:
-        const VList<T>& vlist_obj;
+        const VList<T>* vlist_obj;
         Node* iter_node {nullptr};
     };
 
@@ -205,6 +205,11 @@ class VList
         head = nullptr;
         tail = nullptr;
         size = 0;
+    }
+
+    virtual size_t get_size() const
+    {
+        return size;
     }
 
     virtual V* get(V* value_ptr)

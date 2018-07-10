@@ -105,9 +105,9 @@ class VMap
     {
       public:
         BaseIterator(const VMap<K, V>& vmap_ref):
-            vmap_obj(vmap_ref)
+            vmap_obj(&vmap_ref)
         {
-            iter_node = vmap_obj.head;
+            iter_node = vmap_obj->head;
         }
 
         virtual ~BaseIterator() = default;
@@ -120,7 +120,7 @@ class VMap
 
         virtual size_t get_size() const
         {
-            return vmap_obj.size;
+            return vmap_obj->size;
         }
 
         virtual bool has_next() const
@@ -139,7 +139,7 @@ class VMap
             return ret_node;
         }
       private:
-        const VMap<K, V>& vmap_obj;
+        const VMap<K, V>* vmap_obj;
         Node* iter_node {nullptr};
     };
 
@@ -245,6 +245,11 @@ class VMap
         head = nullptr;
         tail = nullptr;
         size = 0;
+    }
+
+    virtual size_t get_size() const
+    {
+        return size;
     }
 
     virtual V* get(const K* key_ptr)

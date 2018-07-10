@@ -181,11 +181,11 @@ class QTree : public dsaext::Map<K, V>
     {
       public:
         BaseIterator(QTree<K, V>& qtree_ref):
-            qtree_obj(qtree_ref)
+            qtree_obj(&qtree_ref)
         {
-            if (qtree_obj.root != nullptr)
+            if (qtree_obj->root != nullptr)
             {
-                iter_node = qtree_obj.root;
+                iter_node = qtree_obj->root;
                 while (iter_node->less != nullptr)
                 {
                     iter_node = iter_node->less;
@@ -198,7 +198,7 @@ class QTree : public dsaext::Map<K, V>
         }
 
         BaseIterator(QTree<K, V>& qtree_ref, Node& start_node):
-            qtree_obj(qtree_ref),
+            qtree_obj(&qtree_ref),
             iter_node(&start_node)
         {
         }
@@ -221,7 +221,7 @@ class QTree : public dsaext::Map<K, V>
 
         virtual size_t get_size() const
         {
-            return qtree_obj.size;
+            return qtree_obj->size;
         }
 
       protected:
@@ -260,7 +260,7 @@ class QTree : public dsaext::Map<K, V>
             return ret_node;
         }
       private:
-        QTree& qtree_obj;
+        const QTree* qtree_obj;
         Node*  iter_node {nullptr};
     };
 
@@ -269,11 +269,11 @@ class QTree : public dsaext::Map<K, V>
     {
       public:
         BaseReverseIterator(QTree<K, V>& qtree_ref):
-            qtree_obj(qtree_ref)
+            qtree_obj(&qtree_ref)
         {
-            if (qtree_obj.root != nullptr)
+            if (qtree_obj->root != nullptr)
             {
-                iter_node = qtree_obj.root;
+                iter_node = qtree_obj->root;
                 while (iter_node->greater != nullptr)
                 {
                     iter_node = iter_node->greater;
@@ -286,7 +286,7 @@ class QTree : public dsaext::Map<K, V>
         }
 
         BaseReverseIterator(QTree<K, V>& qtree_ref, Node& start_node):
-            qtree_obj(qtree_ref),
+            qtree_obj(&qtree_ref),
             iter_node(&start_node)
         {
         }
@@ -309,7 +309,7 @@ class QTree : public dsaext::Map<K, V>
 
         virtual size_t get_size() const
         {
-            return qtree_obj.size;
+            return qtree_obj->size;
         }
 
       protected:
@@ -348,7 +348,7 @@ class QTree : public dsaext::Map<K, V>
             return ret_node;
         }
       private:
-        QTree& qtree_obj;
+        const QTree* qtree_obj;
         Node*  iter_node {nullptr};
     };
 
