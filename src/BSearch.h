@@ -1,7 +1,7 @@
 /**
  * Binary search in a sorted array
  *
- * @version 2018-05-16_001
+ * @version 2018-07-11_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
  * Copyright (C) 2012 - 2018 Robert ALTNOEDER
@@ -79,7 +79,7 @@ class BSearch
         size_t width {array_length};
         while (width > 0)
         {
-            const size_t mid_index = start_index + (width / 2);
+            const size_t mid_index = start_index + (width >> 1);
             int direction = compare(&(array[mid_index]), value);
             if (direction < 0)
             {
