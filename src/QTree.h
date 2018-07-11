@@ -564,7 +564,7 @@ class QTree : public dsaext::Map<K, V>
     virtual V* get(const K* key) const
     {
         const V* value {nullptr};
-        Node* node = find_node(key);
+        const Node* const node = find_node(key);
         if (node != nullptr)
         {
             value = node->value;
@@ -575,7 +575,7 @@ class QTree : public dsaext::Map<K, V>
     virtual typename dsaext::Map<K, V>::entry get_entry(const K* key) const
     {
         typename dsaext::Map<K, V>::entry qtree_entry {nullptr, nullptr};
-        Node* node = find_node(key);
+        const Node* const node = find_node(key);
         if (node != nullptr)
         {
             qtree_entry.key = node->key;
@@ -587,6 +587,84 @@ class QTree : public dsaext::Map<K, V>
     virtual Node* get_node(const K* key) const
     {
         return find_node(key);
+    }
+
+    virtual K* get_first_key() const
+    {
+        const K* key {nullptr};
+        const Node* const node = find_first_node();
+        if (node != nullptr)
+        {
+            key = node->key;
+        }
+        return const_cast<K*> (key);
+    }
+
+    virtual V* get_first_value() const
+    {
+        const V* value {nullptr};
+        const Node* const node = find_first_node();
+        if (node != nullptr)
+        {
+            value = node->value;
+        }
+        return const_cast<V*> (value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_first_entry() const
+    {
+        typename dsaext::Map<K, V>::entry qtree_entry {nullptr, nullptr};
+        const Node* const node = find_first_node();
+        if (node != nullptr)
+        {
+            qtree_entry.key = node->key;
+            qtree_entry.value = node->value;
+        }
+        return qtree_entry;
+    }
+
+    virtual Node* get_first_node() const
+    {
+        return find_first_node();
+    }
+
+    virtual K* get_last_key() const
+    {
+        const K* key {nullptr};
+        const Node* const node = find_last_node();
+        if (node != nullptr)
+        {
+            key = node->key;
+        }
+        return const_cast<K*> (key);
+    }
+
+    virtual V* get_last_value() const
+    {
+        const V* value {nullptr};
+        const Node* const node = find_last_node();
+        if (node != nullptr)
+        {
+            value = node->value;
+        }
+        return const_cast<V*> (value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_last_entry() const
+    {
+        typename dsaext::Map<K, V>::entry qtree_entry {nullptr, nullptr};
+        const Node* const node = find_last_node();
+        if (node != nullptr)
+        {
+            qtree_entry.key = node->key;
+            qtree_entry.value = node->value;
+        }
+        return qtree_entry;
+    }
+
+    virtual Node* get_last_node() const
+    {
+        return find_last_node();
     }
 
     // @throws std::bad_alloc, dsaext::DuplicateInsertionException
@@ -790,6 +868,32 @@ class QTree : public dsaext::Map<K, V>
             }
         }
 
+        return node;
+    }
+
+    inline Node* find_first_node() const
+    {
+        Node* node = root;
+        if (node != nullptr)
+        {
+            while (node->less != nullptr)
+            {
+                node = node->less;
+            }
+        }
+        return node;
+    }
+
+    inline Node* find_last_node() const
+    {
+        Node* node = root;
+        if (node != nullptr)
+        {
+            while (node->greater != nullptr)
+            {
+                node = node->greater;
+            }
+        }
         return node;
     }
 
