@@ -1,7 +1,7 @@
 /**
  * Quick balanced binary search tree
  *
- * @version 2018-05-16_001
+ * @version 2018-07-13_001
  * @author  Robert Altnoeder (r.altnoeder@gmx.net)
  *
  * Copyright (C) 2012 - 2018 Robert ALTNOEDER
@@ -98,6 +98,13 @@ class QTree : public dsaext::Map<K, V>
         virtual V* get_value() const
         {
             return const_cast<V*> (value);
+        }
+
+        virtual V* set_value(const V* new_value)
+        {
+            const V* prev_value = value;
+            value = new_value;
+            return const_cast<V*> (prev_value);
         }
 
         virtual Node* successor() const
@@ -241,19 +248,11 @@ class QTree : public dsaext::Map<K, V>
                 }
                 else
                 {
-                    do
+                    while (iter_node->parent != nullptr && iter_node->parent->greater == iter_node)
                     {
-                        if (iter_node->parent != nullptr)
-                        {
-                            if (iter_node->parent->less == iter_node)
-                            {
-                                iter_node = iter_node->parent;
-                                break;
-                            }
-                        }
                         iter_node = iter_node->parent;
                     }
-                    while (iter_node != nullptr);
+                    iter_node = iter_node->parent;
                 }
             }
 
@@ -329,19 +328,11 @@ class QTree : public dsaext::Map<K, V>
                 }
                 else
                 {
-                    do
+                    while (iter_node->parent != nullptr && iter_node->parent->less == iter_node)
                     {
-                        if (iter_node->parent != nullptr)
-                        {
-                            if (iter_node->parent->greater == iter_node)
-                            {
-                                iter_node = iter_node->parent;
-                                break;
-                            }
-                        }
                         iter_node = iter_node->parent;
                     }
-                    while (iter_node != nullptr);
+                    iter_node = iter_node->parent;
                 }
             }
 
@@ -667,19 +658,172 @@ class QTree : public dsaext::Map<K, V>
         return find_last_node();
     }
 
+    virtual K* get_ceiling_key(const K* key) const
+    {
+        const K* ceiling_key {nullptr};
+        const Node* const node = find_ceiling_node_impl(key);
+        if (node != nullptr)
+        {
+            ceiling_key = node->key;
+        }
+        return const_cast<K*> (ceiling_key);
+    }
+
+    virtual V* get_ceiling_value(const K* key) const
+    {
+        const V* ceiling_value {nullptr};
+        const Node* const node = find_ceiling_node_impl(key);
+        if (node != nullptr)
+        {
+            ceiling_value = node->value;
+        }
+        return const_cast<V*> (ceiling_value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_ceiling_entry(const K* key) const
+    {
+        typename dsaext::Map<K, V>::entry ceiling_entry {nullptr, nullptr};
+        const Node* const node = find_ceiling_node_impl(key);
+        if (node != nullptr)
+        {
+            ceiling_entry.key = node->key;
+            ceiling_entry.value = node->value;
+        }
+        return ceiling_entry;
+    }
+
+    virtual Node* get_ceiling_node(const K* key) const
+    {
+        return find_ceiling_node_impl(key);
+    }
+
+    virtual K* get_floor_key(const K* key) const
+    {
+        const K* floor_key {nullptr};
+        const Node* const node = find_floor_node_impl(key);
+        if (node != nullptr)
+        {
+            floor_key = node->key;
+        }
+        return const_cast<K*> (floor_key);
+    }
+
+    virtual V* get_floor_value(const K* key) const
+    {
+        const V* floor_value {nullptr};
+        const Node* const node = find_floor_node_impl(key);
+        if (node != nullptr)
+        {
+            floor_value = node->value;
+        }
+        return const_cast<V*> (floor_value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_floor_entry(const K* key) const
+    {
+        typename dsaext::Map<K, V>::entry floor_entry {nullptr, nullptr};
+        const Node* const node = find_floor_node_impl(key);
+        if (node != nullptr)
+        {
+            floor_entry.key = node->key;
+            floor_entry.value = node->value;
+        }
+        return floor_entry;
+    }
+
+    virtual Node* get_floor_node(const K* key) const
+    {
+        return find_floor_node_impl(key);
+    }
+
+    virtual K* get_greater_key(const K* key) const
+    {
+        const K* greater_key {nullptr};
+        const Node* const node = find_greater_node_impl(key);
+        if (node != nullptr)
+        {
+            greater_key = node->key;
+        }
+        return const_cast<K*> (greater_key);
+    }
+
+    virtual V* get_greater_value(const K* key) const
+    {
+        const V* greater_value {nullptr};
+        const Node* const node = find_greater_node_impl(key);
+        if (node != nullptr)
+        {
+            greater_value = node->value;
+        }
+        return const_cast<V*> (greater_value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_greater_entry(const K* key) const
+    {
+        typename dsaext::Map<K, V>::entry greater_entry {nullptr, nullptr};
+        const Node* const node = find_greater_node_impl(key);
+        if (node != nullptr)
+        {
+            greater_entry.key = node->key;
+            greater_entry.value = node->value;
+        }
+        return greater_entry;
+    }
+
+    virtual Node* get_greater_node(const K* key) const
+    {
+        return find_greater_node_impl(key);
+    }
+
+    virtual K* get_less_key(const K* key) const
+    {
+        const K* less_key {nullptr};
+        const Node* const node = find_less_node_impl(key);
+        if (node != nullptr)
+        {
+            less_key = node->key;
+        }
+        return const_cast<K*> (less_key);
+    }
+
+    virtual V* get_less_value(const K* key) const
+    {
+        const V* less_value {nullptr};
+        const Node* const node = find_less_node_impl(key);
+        if (node != nullptr)
+        {
+            less_value = node->value;
+        }
+        return const_cast<V*> (less_value);
+    }
+
+    virtual typename dsaext::Map<K, V>::entry get_less_entry(const K* key) const
+    {
+        typename dsaext::Map<K, V>::entry less_entry {nullptr, nullptr};
+        const Node* const node = find_less_node_impl(key);
+        if (node != nullptr)
+        {
+            less_entry.key = node->key;
+            less_entry.value = node->value;
+        }
+        return less_entry;
+    }
+
+    virtual Node* get_less_node(const K* key) const
+    {
+        return find_less_node_impl(key);
+    }
+
     // @throws std::bad_alloc, dsaext::DuplicateInsertionException
     virtual void insert(const K* key, const V* value)
     {
-        Node** ref_ins_node {nullptr};
-        Node* parent_node {nullptr};
-
         if (root == nullptr)
         {
-            ref_ins_node = &root;
+            insert_node_impl(&root, nullptr, key, value);
         }
         else
         {
-            parent_node = root;
+            Node* parent_node = root;
             while (true)
             {
                 const int cmp_rc = compare(key, parent_node->key);
@@ -687,7 +831,7 @@ class QTree : public dsaext::Map<K, V>
                 {
                     if (parent_node->less == nullptr)
                     {
-                        ref_ins_node = &parent_node->less;
+                        insert_node_impl(&parent_node->less, parent_node, key, value);
                         break;
                     }
                     else
@@ -700,7 +844,7 @@ class QTree : public dsaext::Map<K, V>
                 {
                     if (parent_node->greater == nullptr)
                     {
-                        ref_ins_node = &parent_node->greater;
+                        insert_node_impl(&parent_node->greater, parent_node, key, value);
                         break;
                     }
                     else
@@ -714,18 +858,72 @@ class QTree : public dsaext::Map<K, V>
                 }
             }
         }
+    }
 
-        if (ref_ins_node != nullptr)
+    // @throws std::bad_alloc
+    virtual V* insert_or_update(const K* key, const V* value)
+    {
+        const V* prev_value {nullptr};
+
+        if (root == nullptr)
         {
-            Node* ins_node = new Node(key, value);
-            *ref_ins_node = ins_node;
-            ins_node->parent = parent_node;
-            ++size;
-            if (parent_node != nullptr)
+            insert_node_impl(&root, nullptr, key, value);
+        }
+        else
+        {
+            Node* parent_node = root;
+            while (true)
             {
-                rebalance_insert(ins_node, parent_node);
+                const int cmp_rc = compare(key, parent_node->key);
+                if (cmp_rc < 0)
+                {
+                    if (parent_node->less == nullptr)
+                    {
+                        insert_node_impl(&parent_node->less, parent_node, key, value);
+                        break;
+                    }
+                    else
+                    {
+                        parent_node = parent_node->less;
+                    }
+                }
+                else
+                if (cmp_rc > 0)
+                {
+                    if (parent_node->greater == nullptr)
+                    {
+                        insert_node_impl(&parent_node->greater, parent_node, key, value);
+                        break;
+                    }
+                    else
+                    {
+                        parent_node = parent_node->greater;
+                    }
+                }
+                else
+                {
+                    prev_value = parent_node->value;
+                    parent_node->value = value;
+                    break;
+                }
             }
         }
+        return const_cast<V*> (prev_value);
+    }
+
+    // @throws std::bad_alloc
+    virtual V* update(const K* key, const V* value)
+    {
+        const V* prev_value {nullptr};
+
+        Node* node = find_node(key);
+        if (node != nullptr)
+        {
+            prev_value = node->value;
+            node->value = value;
+        }
+
+        return const_cast<V*> (prev_value);
     }
 
     // @throws std::bad_alloc, dsaext::DuplicateInsertionException
@@ -897,10 +1095,186 @@ class QTree : public dsaext::Map<K, V>
         return node;
     }
 
+    inline Node* find_ceiling_node_impl(const K* key) const
+    {
+        Node* node = root;
+        while (node != nullptr)
+        {
+            int cmp_rc = compare(key, node->key);
+            if (cmp_rc < 0)
+            {
+                if (node->less != nullptr)
+                {
+                    node = node->less;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            if (cmp_rc > 0)
+            {
+                if (node->greater != nullptr)
+                {
+                    node = node->greater;
+                }
+                else
+                {
+                    while (node->parent != nullptr && node->parent->greater == node)
+                    {
+                        node = node->parent;
+                    }
+                    node = node->parent;
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        return node;
+    }
+
+    inline Node* find_floor_node_impl(const K* key) const
+    {
+        Node* node = root;
+        while (node != nullptr)
+        {
+            int cmp_rc = compare(key, node->key);
+            if (cmp_rc < 0)
+            {
+                if (node->less != nullptr)
+                {
+                    node = node->less;
+                }
+                else
+                {
+                    while (node->parent != nullptr && node->parent->less == node)
+                    {
+                        node = node->parent;
+                    }
+                    node = node->parent;
+                    break;
+                }
+            }
+            else
+            if (cmp_rc > 0)
+            {
+                if (node->greater != nullptr)
+                {
+                    node = node->greater;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        return node;
+    }
+
+    inline Node* find_greater_node_impl(const K* key) const
+    {
+        Node* node = root;
+        while (node != nullptr)
+        {
+            int cmp_rc = compare(key, node->key);
+            if (cmp_rc < 0)
+            {
+                if (node->less != nullptr)
+                {
+                    node = node->less;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (node->greater != nullptr)
+                {
+                    node = node->greater;
+                }
+                else
+                {
+                    while (node->parent != nullptr && node->parent->greater == node)
+                    {
+                        node = node->parent;
+                    }
+                    node = node->parent;
+                    break;
+                }
+            }
+        }
+        return node;
+    }
+
+    inline Node* find_less_node_impl(const K* key) const
+    {
+        Node* node = root;
+        while (node != nullptr)
+        {
+            int cmp_rc = compare(key, node->key);
+            if (cmp_rc > 0)
+            {
+                if (node->greater != nullptr)
+                {
+                    node = node->greater;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (node->less != nullptr)
+                {
+                    node = node->less;
+                }
+                else
+                {
+                    while (node->parent != nullptr && node->parent->less == node)
+                    {
+                        node = node->parent;
+                    }
+                    node = node->parent;
+                    break;
+                }
+            }
+        }
+        return node;
+    }
+
     inline void remove_node_impl(Node* rm_node)
     {
         unlink_node_impl(rm_node);
         delete rm_node;
+    }
+
+    // @throws std::bad_alloc
+    inline void insert_node_impl(
+        Node** const ref_ins_node,
+        Node* const parent_node,
+        const K* const key,
+        const V* const value
+    )
+    {
+        Node* ins_node = new Node(key, value);
+        *ref_ins_node = ins_node;
+        ins_node->parent = parent_node;
+        ++size;
+        if (parent_node != nullptr)
+        {
+            rebalance_insert(ins_node, parent_node);
+        }
     }
 
     inline void unlink_node_impl(Node* rm_node)
