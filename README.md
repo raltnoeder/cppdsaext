@@ -16,6 +16,7 @@ The primary project goals are:
 
 **Algorithms & utility functions**  
 BSearch - Binary search on a sorted array  
+integerparse - Strict and safe string to integral number conversion
 
 **Data structures**  
 QTree - Sorted key/value map providing O(log(n)) lookup, insert, delete  
@@ -23,7 +24,6 @@ VMap - Double ended queue (deque) key/value map
 VList - Double ended queue (deque) list  
 
 **In development (experimental, future/...)**  
-integerparse - Safe and strictly typed string to number conversion  
 RndNrGen - Pseudo random number generators (PRNGs)  
 PrngXorshift128Plus - Fast pseudo random number generation, xorshift128+ algorithm  
 PrngXoroshiro128 - Fast pseudo random number generation, xoroshiro128 algorithm  
