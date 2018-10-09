@@ -23,7 +23,6 @@ QTree - Sorted key/value map providing O(log(n)) lookup, insert, delete
 VMap - Double ended queue (deque) key/value map  
 VList - Double ended queue (deque) list  
 
-**In development (experimental, future/...)**  
-RndNrGen - Pseudo random number generators (PRNGs)  
+**Pseudo random number generators**  
 PrngXorshift128Plus - Fast pseudo random number generation, xorshift128+ algorithm  
-PrngXoroshiro128 - Fast pseudo random number generation, xoroshiro128 algorithm  
+PrngXoroshiro128 - Fast pseudo random number generation, xoroshiro128+ algorithm  
