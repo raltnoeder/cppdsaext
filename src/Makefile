@@ -2,7 +2,7 @@ CXXFLAGS=-std=c++11 -I. -Wall -Werror --pedantic-errors -fPIC -O2 \
 -Wsign-compare -Wpointer-arith -Wswitch-default -Wswitch-enum -Wshadow
 CXX=c++
 
-dsaext-obj := dsaext.o integerparse.o
+dsaext-obj := dsaext.o integerparse.o PrngXorshift128Plus.o PrngXoroshiro128.o
 
 all: dsaext
 
