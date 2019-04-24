@@ -1,6 +1,8 @@
 #ifndef RNDNRGEN_H
 #define RNDNRGEN_H
 
+#include <cstdint>
+
 namespace dsaext
 {
     class RndNrGen
