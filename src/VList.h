@@ -94,7 +94,7 @@ class VList
     class BaseIterator : public dsaext::QIterator<T>
     {
       public:
-        BaseIterator(const VList<T>& vlist_ref):
+        BaseIterator(const VList<V>& vlist_ref):
             vlist_obj(&vlist_ref)
         {
             iter_node = vlist_obj->head;
@@ -129,7 +129,7 @@ class VList
             return ret_node;
         }
       private:
-        const VList<T>* vlist_obj;
+        const VList<V>* vlist_obj;
         Node* iter_node {nullptr};
     };
 
