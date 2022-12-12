@@ -223,9 +223,39 @@ class VList
         return const_cast<V*> (value);
     }
 
+    virtual V* get_head_value()
+    {
+        const V* value = nullptr;
+        if (head != nullptr)
+        {
+            value = head->value;
+        }
+        return const_cast<V*> (value);
+    }
+
+    virtual V* get_tail_value()
+    {
+        const V* value = nullptr;
+        if (tail != nullptr)
+        {
+            value = tail->value;
+        }
+        return const_cast<V*> (value);
+    }
+
     virtual Node* get_node(const V* value_ptr)
     {
         return find_node(value_ptr);
+    }
+
+    virtual Node* get_head_node()
+    {
+        return head;
+    }
+
+    virtual Node* get_tail_node()
+    {
+        return tail;
     }
 
     // @throw std::bad_alloc
