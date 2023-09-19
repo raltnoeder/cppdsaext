@@ -29,10 +29,15 @@ namespace dsaext
         virtual uint16_t next_uint16() override;
         virtual uint8_t next_uint8() override;
         virtual bool next_bool() override;
+        virtual void jump();
+        virtual void long_jump();
 
       private:
         state seed;
+        static const state NORM_JUMP;
+        static const state LONG_JUMP;
         inline uint64_t next();
+        inline void jump_impl(const state& jump_params);
     };
 }
 
